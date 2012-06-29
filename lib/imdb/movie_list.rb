@@ -12,6 +12,7 @@ module Imdb
         matchers = exact_titles.parent.next.search("a")
       else
         matchers = document.search('a[@href^="/title/tt"]')
+      end
       matchers.reject do |element|
         element.innerHTML.imdb_strip_tags.empty? ||
         element.parent.innerHTML =~ /media from/i
