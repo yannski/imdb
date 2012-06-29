@@ -7,7 +7,7 @@ module Imdb
     
     private
     def parse_movies
-      document.search('a[@href^="/title/tt"]').reject do |element|
+      document.search("p b[text()='Titles (Exact Matches)']").first.parent.next.search("a").reject do |element|
         element.innerHTML.imdb_strip_tags.empty? ||
         element.parent.innerHTML =~ /media from/i
       end.map do |element|
