@@ -14,7 +14,7 @@ module Imdb
     #
     def initialize(imdb_id, title = nil, also_known_as = [])
       @id = imdb_id
-      @url = "http://akas.imdb.com/title/tt#{imdb_id}/combined"
+      @url = "http://www.imdb.com/title/tt#{imdb_id}"
       @title = title.gsub(/"/, "") if title
       @also_known_as = also_known_as
     end
@@ -76,12 +76,12 @@ module Imdb
 
     # Returns a string containing the plot.
     def plot
-      sanitize_plot(document.search("h5[text()='Plot:'] ~ div").first.innerHTML) rescue nil
+      sanitize_plot(document.search("[@itemprop='description']").first.innerHTML) rescue nil
     end
 
     # Returns a string containing the URL to the movie poster.
     def poster
-      src = document.at("a[@name='poster'] img")['src'] rescue nil
+      src = document.at("#img_primary img")['src'] rescue nil
       case src
       when /^(http:.+@@)/
         $1 + '.jpg'
@@ -92,7 +92,7 @@ module Imdb
 
     # Returns a float containing the average user rating
     def rating
-      document.at(".starbar-meta b").innerHTML.strip.imdb_unescape_html.split('/').first.to_f rescue nil
+      document.at(".star-box-giga-star").innerHTML.strip.imdb_unescape_html.split('/').first.to_f rescue nil
     end
 
     # Returns an int containing the number of user ratings
@@ -138,7 +138,7 @@ module Imdb
 
     # Use HTTParty to fetch the raw HTML for this movie.
     def self.find_by_id(imdb_id)
-      open("http://akas.imdb.com/title/tt#{imdb_id}/combined")
+      open("http://www.imdb.com/title/tt#{imdb_id}")
     end
 
     # Convenience method for search
